@@ -1,30 +1,38 @@
-import { useState } from "react";
 import { Form, Input } from "antd";
 import { MailOutlined, UserOutlined } from "@ant-design/icons";
 import SubmitButton from "../../components/submit-button.component";
 
-export default function RequestEmailForm() {
+const formFields = {
+  name: "My Full Name",
+  email: "My E-mail",
+  confirm_email: "Confirm E-mail",
+  send: "Send Invite",
+};
+
+const validationMessages = {
+  confirm_email: "Please confirm your email!",
+};
+
+const errorMessages = {
+  email_not_match: "The new email that you entered do not match!",
+};
+
+export default function RequestEmailForm({ onSubmit, isPending }) {
   const [form] = Form.useForm();
 
-  const action = (changedValues, values) => {
-    console.log(`changedValues: ${JSON.stringify(changedValues, null)}`);
-    console.log(`values: ${JSON.stringify(values, null, 2)}`);
+  const onFinish = (values) => {
+    onSubmit({ name: values.name, email: values.email });
   };
 
-  const onFinish = (values) => {
-    console.log(`onFinish: ${JSON.stringify(values, null, 2)}`);
-  };
   return (
     <Form
       layout={"vertical"}
       form={form}
       onFinish={onFinish}
-      // initialValues={{ layout: formLayout }}
-      // onValuesChange={onFormLayoutChange}
-      // style={{ maxWidth: formLayout === "inline" ? "none" : 600 }}
+      requiredMark={false}
     >
       <Form.Item
-        label="My Full Name"
+        label={formFields.name}
         name="name"
         validateTrigger="onBlur"
         rules={[
@@ -38,30 +46,28 @@ export default function RequestEmailForm() {
         <Input prefix={<UserOutlined />} placeholder="Alex Anderson" />
       </Form.Item>
       <Form.Item
-        label="My E-mail"
+        label={formFields.email}
         name="email"
         rules={[{ type: "email" }, { required: true }]}
       >
         <Input prefix={<MailOutlined />} placeholder="alex.anderson@mail.com" />
       </Form.Item>
       <Form.Item
-        label="Confirm E-mail"
+        label={formFields.confirm_email}
         name="confirm"
         dependencies={["email"]}
-        // hasFeedback
+        hasFeedback
         rules={[
           {
             required: true,
-            message: "Please confirm your email!",
+            message: validationMessages.confirm_email,
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (!value || getFieldValue("email") === value) {
                 return Promise.resolve();
               }
-              return Promise.reject(
-                new Error("The new email that you entered do not match!")
-              );
+              return Promise.reject(new Error(errorMessages.email_not_match));
             },
           }),
         ]}
@@ -69,7 +75,9 @@ export default function RequestEmailForm() {
         <Input />
       </Form.Item>
       <Form.Item>
-        <SubmitButton form={form}>Send Invite</SubmitButton>
+        <SubmitButton form={form} isPending={isPending}>
+          {formFields.send}
+        </SubmitButton>
       </Form.Item>
     </Form>
   );

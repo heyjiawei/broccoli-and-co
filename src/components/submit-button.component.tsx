@@ -14,7 +14,7 @@ export default function SubmitButton({
   const values = Form.useWatch([], form);
   useEffect(() => {
     form
-      .validateFields()
+      .validateFields({ validateOnly: true })
       .then(() => setSubmittable(true))
       .catch(() => setSubmittable(false));
   }, [form, values]);

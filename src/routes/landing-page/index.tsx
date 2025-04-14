@@ -1,11 +1,13 @@
+import { lazy, useState } from "react";
 import { Button, Modal, message } from "antd";
-import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { attendeeCreate } from "../../api";
-import RequestEmailForm from "./form.component";
 import StickyHeader from "../../components/sticky-header/sticky-header.component";
 import StickyFooter from "../../components/sticky-footer/sticky-footer.component";
 import classes from "./layout.module.css";
+import type { AttendeeCreateBody } from "../../api/types";
+
+const RequestEmailForm = lazy(() => import("./form.component"));
 
 const successMessages = {
   title_registered: "Successfully Registered",
@@ -18,6 +20,7 @@ const headerContent = {
 
 const pageContent = {
   eat_healthy_live_better: "Eat Healthy. Live Better.",
+  request_invite_button: "Request an invite",
 };
 
 const footerContent = {
@@ -48,7 +51,7 @@ export default function Page() {
     },
   });
 
-  const onSubmitForm = (formData) => {
+  const onSubmitForm = (formData: AttendeeCreateBody) => {
     mutation.mutate(formData);
   };
 
@@ -64,7 +67,7 @@ export default function Page() {
           {pageContent.eat_healthy_live_better}
         </h1>
         <Button type="primary" onClick={() => setOpen(true)}>
-          Request an invite
+          {pageContent.request_invite_button}
         </Button>
         <Modal
           open={open}
@@ -72,7 +75,7 @@ export default function Page() {
           footer={null}
           destroyOnClose
         >
-          <h1>Request an Invite</h1>
+          <h1>{pageContent.request_invite_button}</h1>
           <RequestEmailForm
             onSubmit={onSubmitForm}
             isPending={mutation.isPending}
@@ -83,11 +86,7 @@ export default function Page() {
           open={openSuccessPopup}
           onOk={() => setOpenSuccessPopup(false)}
           onCancel={() => setOpenSuccessPopup(false)}
-          footer={(_, { OkBtn }) => (
-            <>
-              <OkBtn />
-            </>
-          )}
+          footer={(_, { OkBtn }) => <OkBtn />}
         >
           {successMessages.check_your_email}
         </Modal>

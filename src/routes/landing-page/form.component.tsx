@@ -1,6 +1,7 @@
 import { Form, Input } from "antd";
 import { MailOutlined, UserOutlined } from "@ant-design/icons";
 import SubmitButton from "../../components/submit-button.component";
+import type { AttendeeCreateBody } from "../../api/types";
 
 const formFields = {
   name: "My Full Name",
@@ -17,10 +18,16 @@ const errorMessages = {
   email_not_match: "The new email that you entered do not match!",
 };
 
-export default function RequestEmailForm({ onSubmit, isPending }) {
+export default function RequestEmailForm({
+  onSubmit,
+  isPending,
+}: {
+  onSubmit: (formData: AttendeeCreateBody) => void;
+  isPending: boolean;
+}) {
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
+  const onFinish = (values: AttendeeCreateBody) => {
     onSubmit({ name: values.name, email: values.email });
   };
 

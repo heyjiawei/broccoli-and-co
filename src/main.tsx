@@ -3,6 +3,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import LandingPage from "./routes/landing-page";
+import "./index.css";
 
 const router = createBrowserRouter([
   {

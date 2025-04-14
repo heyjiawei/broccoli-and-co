@@ -28,11 +28,7 @@ export default function Page() {
       setOpenSuccessPopup(true);
       mutation.reset();
     },
-    onError: (error, variables, context) => {
-      // TODO: Error thrown by attendeeCreate not triggering onError callback
-      console.log(`mutation.onError error: ${error}`);
-      console.log(`mutation.onError variables: ${variables}`);
-      console.log(`mutation.onError context: ${context}`);
+    onError: (error) => {
       errorNotification(error.message);
     },
   });

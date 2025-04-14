@@ -1,5 +1,13 @@
 import type { AttendeeCreateBody } from "./types";
 
+interface IResponse {
+  errorMessage: string;
+}
+
+function getErrorMessage(responseJson: IResponse) {
+  return responseJson.errorMessage;
+}
+
 export async function attendeeCreate(body: AttendeeCreateBody) {
   const base =
     "https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth";
@@ -9,7 +17,10 @@ export async function attendeeCreate(body: AttendeeCreateBody) {
     body: JSON.stringify(body),
   });
 
-  const result = await response.json();
-  console.log(`attendeeCreate::response: ${result}`);
-  return result;
+  if (response.ok) {
+    return await response.json();
+  } else {
+    const errorMessage = getErrorMessage(await response.json());
+    throw new Error(errorMessage);
+  }
 }

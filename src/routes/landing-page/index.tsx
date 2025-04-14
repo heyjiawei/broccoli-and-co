@@ -1,11 +1,9 @@
-import { lazy, useState } from "react";
-import { Button, Modal, message } from "antd";
-import { useMutation } from "@tanstack/react-query";
-import { attendeeCreate } from "../../api";
+import { lazy } from "react";
+import { Button, Modal } from "antd";
+import { useRequestInvite } from "./hooks";
 import StickyHeader from "../../components/sticky-header/sticky-header.component";
 import StickyFooter from "../../components/sticky-footer/sticky-footer.component";
 import classes from "./layout.module.css";
-import type { AttendeeCreateBody } from "../../api/types";
 
 const RequestEmailForm = lazy(() => import("./form.component"));
 
@@ -28,32 +26,15 @@ const footerContent = {
 };
 
 export default function Page() {
-  const [open, setOpen] = useState(false);
-  const [openSuccessPopup, setOpenSuccessPopup] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
-
-  const errorNotification = (content: string) => {
-    messageApi.open({
-      type: "error",
-      content,
-    });
-  };
-
-  const mutation = useMutation({
-    mutationFn: attendeeCreate,
-    onSuccess: () => {
-      setOpen(false);
-      setOpenSuccessPopup(true);
-      mutation.reset();
-    },
-    onError: (error) => {
-      errorNotification(error.message);
-    },
-  });
-
-  const onSubmitForm = (formData: AttendeeCreateBody) => {
-    mutation.mutate(formData);
-  };
+  const {
+    open,
+    setOpen,
+    openSuccessPopup,
+    setOpenSuccessPopup,
+    onSubmitForm,
+    isPending,
+    contextHolder,
+  } = useRequestInvite();
 
   return (
     <>
@@ -76,10 +57,7 @@ export default function Page() {
           destroyOnClose
         >
           <h1>{pageContent.request_invite_button}</h1>
-          <RequestEmailForm
-            onSubmit={onSubmitForm}
-            isPending={mutation.isPending}
-          />
+          <RequestEmailForm onSubmit={onSubmitForm} isPending={isPending} />
         </Modal>
         <Modal
           title={successMessages.title_registered}

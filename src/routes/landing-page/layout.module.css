@@ -1,0 +1,15 @@
+.screenHeight {
+  height: 100vh;
+}
+
+.container {
+  place-items: center;
+  align-content: center;
+  background: #eee;
+  margin: 0 0.5rem;
+}
+
+.typographLarge {
+  font-size: 3.125rem;
+  font-weight: bold;
+}

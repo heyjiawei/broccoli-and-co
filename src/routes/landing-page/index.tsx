@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { Suspense, lazy } from "react";
 import { Button } from "antd";
 import { useRequestInvite } from "./hooks";
 import StickyHeader from "../../components/sticky-header/sticky-header.component";
@@ -40,20 +40,24 @@ export default function Page() {
           {content.page.request_invite_button}
         </Button>
 
-        <RequestEmailFormModal
-          open={open}
-          onCancel={handleClose}
-          onSubmit={onSubmitForm}
-          isPending={isPending}
-          title={content.page.request_invite_button}
-        />
+        <Suspense fallback={null}>
+          <RequestEmailFormModal
+            open={open}
+            onCancel={handleClose}
+            onSubmit={onSubmitForm}
+            isPending={isPending}
+            title={content.page.request_invite_button}
+          />
+        </Suspense>
 
-        <SuccessModal
-          open={openSuccessPopup}
-          onClose={handleSuccessClose}
-          title={content.messages.title_registered}
-          content={content.messages.check_your_email}
-        />
+        <Suspense fallback={null}>
+          <SuccessModal
+            open={openSuccessPopup}
+            onClose={handleSuccessClose}
+            title={content.messages.title_registered}
+            content={content.messages.check_your_email}
+          />
+        </Suspense>
       </section>
 
       <StickyFooter>

@@ -1,29 +1,13 @@
 import { lazy } from "react";
-import { Button, Modal } from "antd";
+import { Button } from "antd";
 import { useRequestInvite } from "./hooks";
 import StickyHeader from "../../components/sticky-header/sticky-header.component";
 import StickyFooter from "../../components/sticky-footer/sticky-footer.component";
+import { content } from "./translations";
 import classes from "./layout.module.css";
 
-const RequestEmailForm = lazy(() => import("./form.component"));
-
-const successMessages = {
-  title_registered: "Successfully Registered",
-  check_your_email: "Check your email!",
-};
-
-const headerContent = {
-  company_logo: "Broccoli and Co",
-};
-
-const pageContent = {
-  eat_healthy_live_better: "Eat Healthy. Live Better.",
-  request_invite_button: "Request an invite",
-};
-
-const footerContent = {
-  company_rights: "© [2025] Broccoli & Co. All rights reserved.",
-};
+const RequestEmailFormModal = lazy(() => import("./form-modal.component"));
+const SuccessModal = lazy(() => import("./success-modal.component"));
 
 export default function Page() {
   const {
@@ -36,42 +20,44 @@ export default function Page() {
     contextHolder,
   } = useRequestInvite();
 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleSuccessClose = () => setOpenSuccessPopup(false);
+
   return (
     <>
       {contextHolder}
       <StickyHeader>
-        <h1>{headerContent.company_logo}</h1>
+        <h1>{content.header.company_logo}</h1>
       </StickyHeader>
 
       <section className={`${classes.screenHeight} ${classes.container}`}>
-        <h1 className={classes.typographLarge}>
-          {pageContent.eat_healthy_live_better}
+        <h1 className={classes.typographyLarge}>
+          {content.page.eat_healthy_live_better}
         </h1>
-        <Button type="primary" onClick={() => setOpen(true)}>
-          {pageContent.request_invite_button}
+
+        <Button type="primary" onClick={handleOpen}>
+          {content.page.request_invite_button}
         </Button>
-        <Modal
+
+        <RequestEmailFormModal
           open={open}
-          onCancel={() => setOpen(false)}
-          footer={null}
-          destroyOnClose
-        >
-          <h1>{pageContent.request_invite_button}</h1>
-          <RequestEmailForm onSubmit={onSubmitForm} isPending={isPending} />
-        </Modal>
-        <Modal
-          title={successMessages.title_registered}
+          onCancel={handleClose}
+          onSubmit={onSubmitForm}
+          isPending={isPending}
+          title={content.page.request_invite_button}
+        />
+
+        <SuccessModal
           open={openSuccessPopup}
-          onOk={() => setOpenSuccessPopup(false)}
-          onCancel={() => setOpenSuccessPopup(false)}
-          footer={(_, { OkBtn }) => <OkBtn />}
-        >
-          {successMessages.check_your_email}
-        </Modal>
+          onClose={handleSuccessClose}
+          title={content.messages.title_registered}
+          content={content.messages.check_your_email}
+        />
       </section>
 
       <StickyFooter>
-        <p>{footerContent.company_rights}</p>
+        <p>{content.footer.all_rights_reserved}</p>
       </StickyFooter>
     </>
   );
